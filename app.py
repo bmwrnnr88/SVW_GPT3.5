@@ -28,10 +28,10 @@ if "retry_error" not in st.session_state:
 
 # Set up the page
 st.set_page_config(page_title="Enter title here")
-st.sidebar.title("Title")
-st.sidebar.divider()
-st.sidebar.markdown("Your name", unsafe_allow_html=True)
-st.sidebar.markdown("Assistant GPT")
+st.sidebar.title("Sarcastic Vocab Wizard")
+#st.sidebar.divider()
+#st.sidebar.markdown("Your name", unsafe_allow_html=True)
+#st.sidebar.markdown("Assistant GPT")
 st.sidebar.divider()  
 
 # Initialize OpenAI assistant

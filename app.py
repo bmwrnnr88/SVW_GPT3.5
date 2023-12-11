@@ -22,8 +22,10 @@ def start_chat():
         "role": "user",
         "content": initial_prompt
     }
-    st.session_state.messages = client.beta.threads.messages.create(**message_data)
-
+    response = client.beta.threads.messages.create(**message_data)
+    st.session_state.messages.append(response)
+    st.write("Message sent to the chatbot:", initial_prompt)
+    
 # Initialize session state variables
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())

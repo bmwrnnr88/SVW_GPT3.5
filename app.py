@@ -24,6 +24,9 @@ def start_chat():
     }
     response = client.beta.threads.messages.create(**message_data)
 
+    # Debugging: Print the entire response
+    st.write("API Response:", response)
+
     # Append the response to the messages list
     if 'data' in response and isinstance(response.data, list):
         st.session_state.messages.extend(response.data)

@@ -1,4 +1,4 @@
- # Importing required packages
+# Importing required packages
 import streamlit as st
 import openai
 import uuid
@@ -12,6 +12,17 @@ client = OpenAI()
 
 # Your chosen model
 MODEL = "gpt-4-1106-preview"
+
+# Function for the chatbot's initial response
+def start_chat():
+    initial_prompt = "Hello! I'm the Sarcastic Vocab Wizard. How can I assist you today?"
+    # Sending the initial message from the chatbot
+    message_data = {
+        "thread_id": st.session_state.thread.id,
+        "role": "assistant",
+        "content": initial_prompt
+    }
+    st.session_state.messages = client.beta.threads.messages.create(**message_data)
 
 # Initialize session state variables
 if "session_id" not in st.session_state:
@@ -27,11 +38,8 @@ if "retry_error" not in st.session_state:
     st.session_state.retry_error = 0
 
 # Set up the page
-st.set_page_config(page_title="Enter title here")
+st.set_page_config(page_title="Sarcastic Vocab Wizard")
 st.sidebar.title("Sarcastic Vocab Wizard")
-#st.sidebar.divider()
-#st.sidebar.markdown("Your name", unsafe_allow_html=True)
-#st.sidebar.markdown("Assistant GPT")
 st.sidebar.divider()  
 
 # Initialize OpenAI assistant
@@ -41,6 +49,12 @@ if "assistant" not in st.session_state:
     st.session_state.thread = client.beta.threads.create(
         metadata={'session_id': st.session_state.session_id}
     )
+
+# Add a button to start the chat
+if st.button('Start Chatbot'):
+    start_chat()
+
+# [Rest of your existing code for displaying messages and handling user inputs]
 
 # Display chat messages
 elif hasattr(st.session_state.run, 'status') and st.session_state.run.status == "completed":

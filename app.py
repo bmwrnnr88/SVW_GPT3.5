@@ -51,6 +51,7 @@ if "assistant" not in st.session_state:
     )
 
 # Add a button to start the chat
+st.button("Reset", type="primary")
 if st.button('Start Chatbot'):
     start_chat()
 

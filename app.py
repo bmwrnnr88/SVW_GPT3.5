@@ -36,15 +36,7 @@ def start_chat():
     st.write("Message sent to the chatbot:", initial_prompt)  # Debugging information
 
     
-# Initialize session state variables
-if "first_visit" not in st.session_state:
-    st.session_state.first_visit = True
-
-if st.session_state.first_visit:
-    with st.chat_message('assistant'):
-        st.markdown("Hello, please tell me your name, first and last, and the period you have Mr. Ward's English class.")
-    st.session_state.first_visit = False
-    
+# Initialize session state variables   
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
 

@@ -15,11 +15,11 @@ MODEL = "gpt-4-1106-preview"
 
 # Function for the chatbot's initial response
 def start_chat():
-    initial_prompt = "Hello! I'm the Sarcastic Vocab Wizard. How can I assist you today?"
+    initial_prompt = "Hello!"
     # Sending the initial message from the chatbot
     message_data = {
         "thread_id": st.session_state.thread.id,
-        "role": "assistant",
+        "role": "user",
         "content": initial_prompt
     }
     st.session_state.messages = client.beta.threads.messages.create(**message_data)

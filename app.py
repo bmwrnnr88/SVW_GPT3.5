@@ -12,13 +12,14 @@ st.set_page_config(page_title="Sarcastic Vocab Wizard")
 st.sidebar.title("Sarcastic Vocab Wizard")
 st.sidebar.divider()  
 
-# CSS to enhance the chat input box
 input_box_styles = """
 <style>
 /* Target the chat input box */
 .stTextInput > div > div > input {
     font-size: 16px; /* Larger font size */
     height: 50px; /* Taller input box */
+    border: 2px solid #007BFF; /* Blue border, 2px thick */
+    border-radius: 5px; /* Rounded corners for the border */
 }
 </style>
 """

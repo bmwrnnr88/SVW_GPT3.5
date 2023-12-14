@@ -7,6 +7,11 @@ import pandas as pd
 import io
 from openai import OpenAI
 
+# Set up the page
+st.set_page_config(page_title="Sarcastic Vocab Wizard")
+st.sidebar.title("Sarcastic Vocab Wizard")
+st.sidebar.divider()  
+
 # CSS to enhance the chat input box
 input_box_styles = """
 <style>
@@ -37,11 +42,6 @@ if "messages" not in st.session_state:
 
 if "retry_error" not in st.session_state:
     st.session_state.retry_error = 0
-
-# Set up the page
-st.set_page_config(page_title="Sarcastic Vocab Wizard")
-st.sidebar.title("Sarcastic Vocab Wizard")
-st.sidebar.divider()  
 
 # Initialize OpenAI assistant
 if "assistant" not in st.session_state:

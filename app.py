@@ -7,6 +7,18 @@ import pandas as pd
 import io
 from openai import OpenAI
 
+# CSS to enhance the chat input box
+input_box_styles = """
+<style>
+/* Target the chat input box */
+.stTextInput > div > div > input {
+    font-size: 16px; /* Larger font size */
+    height: 50px; /* Taller input box */
+}
+</style>
+"""
+st.markdown(input_box_styles, unsafe_allow_html=True)
+
 # Initialize OpenAI client
 client = OpenAI()
 
@@ -29,9 +41,6 @@ if "retry_error" not in st.session_state:
 # Set up the page
 st.set_page_config(page_title="Sarcastic Vocab Wizard")
 st.sidebar.title("Sarcastic Vocab Wizard")
-#st.sidebar.divider()
-#st.sidebar.markdown("Your name", unsafe_allow_html=True)
-#st.sidebar.markdown("Assistant GPT")
 st.sidebar.divider()  
 
 # Initialize OpenAI assistant

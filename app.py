@@ -13,30 +13,7 @@ client = OpenAI()
 # Your chosen model
 MODEL = "gpt-4-1106-preview"
 
-# Function for the chatbot's initial response
-def start_chat():
-    initial_prompt = "Hello, can you help me?"
-    # Sending the initial message as if it's from the user
-    message_data = {
-        "thread_id": st.session_state.thread.id,
-        "role": "user",
-        "content": initial_prompt
-    }
-    response = client.beta.threads.messages.create(**message_data)
-
-    # Debugging: Print the entire response
-    st.write("API Response:", response)
-
-    # Append the response to the messages list
-    if 'data' in response and isinstance(response.data, list):
-        st.session_state.messages.extend(response.data)
-    else:
-        st.error("Failed to receive a valid response from the chatbot.")
-
-    st.write("Message sent to the chatbot:", initial_prompt)  # Debugging information
-
-    
-# Initialize session state variables   
+# Initialize session state variables
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
 
@@ -49,20 +26,12 @@ if "messages" not in st.session_state:
 if "retry_error" not in st.session_state:
     st.session_state.retry_error = 0
 
-# Initialize session state variables
-if "session_id" not in st.session_state:
-    st.session_state.session_id = str(uuid.uuid4())
-
-if "run" not in st.session_state:
-    st.session_state.run = {"status": None}
-
-# Ensure messages is always a list
-if "messages" not in st.session_state or not isinstance(st.session_state.messages, list):
-    st.session_state.messages = []
-
 # Set up the page
 st.set_page_config(page_title="Sarcastic Vocab Wizard")
 st.sidebar.title("Sarcastic Vocab Wizard")
+#st.sidebar.divider()
+#st.sidebar.markdown("Your name", unsafe_allow_html=True)
+#st.sidebar.markdown("Assistant GPT")
 st.sidebar.divider()  
 
 # Initialize OpenAI assistant
@@ -72,13 +41,6 @@ if "assistant" not in st.session_state:
     st.session_state.thread = client.beta.threads.create(
         metadata={'session_id': st.session_state.session_id}
     )
-
-# Add a button to start the chat
-st.button("Reset", type="primary")
-if st.button('Start Chatbot'):
-    start_chat()
-
-# [Rest of your existing code for displaying messages and handling user inputs]
 
 # Display chat messages
 elif hasattr(st.session_state.run, 'status') and st.session_state.run.status == "completed":

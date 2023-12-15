@@ -29,7 +29,7 @@ st.markdown(input_box_styles, unsafe_allow_html=True)
 client = OpenAI()
 
 # Your chosen model
-MODEL = "gpt-4-1106-preview"
+MODEL = "gpt-3.5-turbo-16k"
 
 # Initialize session state variables
 if "session_id" not in st.session_state:

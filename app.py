@@ -71,19 +71,24 @@ if prompt := st.chat_input("How can I help you?"):
     combined_prompt = SYSTEM_PROMPT + prompt
 
     # Call to OpenAI API with the fine-tuned model and the combined prompt
-    try:
-        response = openai.Completion.create(
-            model=MODEL,
-            prompt=combined_prompt,  # Combined system and user prompt
-            max_tokens=150  # Adjust as needed
-        )
-        assistant_reply = response.choices[0].text.strip() if response.choices else "No response."
+    # Assuming openai is already imported and API key is set
+try:
+    response = openai.ChatCompletion.create(
+        model=MODEL,
+        messages=[{"role": "system", "content": SYSTEM_PROMPT},
+                  {"role": "user", "content": prompt}],
+        max_tokens=150  # Adjust as needed
+    )
+    assistant_reply = response['choices'][0]['message']['content'] if response['choices'] else "No response."
 
-        with st.chat_message('assistant'):
-            st.write(assistant_reply)
+    with st.chat_message('assistant'):
+        st.write(assistant_reply)
 
-    except Exception as e:
-        st.error(f"An error occurred: {str(e)}")
+except Exception as e:
+    st.error(f"An error occurred: {str(e)}")
+
+# Retry logic and other parts of your code remain the same
+
 
     # Retry logic as needed (can be customized)
     if st.session_state.retry_error < 3:

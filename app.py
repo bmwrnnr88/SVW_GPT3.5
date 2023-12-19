@@ -6,6 +6,17 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.title("💬 Chatbot")
 
+# Welcome message
+WELCOME_MESSAGE = {"role": "assistant", "content": "Welcome to the chat! How can I help you today?"}
+
+# Initialize messages with the welcome message if it's the user's first visit
+if "messages" not in st.session_state:
+    st.session_state["messages"] = [WELCOME_MESSAGE]
+
+# Display all messages
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
+
 # System prompt
 SYSTEM_MESSAGE = {
     "role": "system",

@@ -48,7 +48,7 @@ if prompt := st.chat_input("What is up?"):
         message_placeholder = st.empty()
         full_response = ""
         for response in openai.ChatCompletion.create(
-            model=st.session_state["ft:gpt-3.5-turbo-0613:personal::8XHlpNEE"],
+            model="ft:gpt-3.5-turbo-0613:personal::8XHlpNEE",
             messages=[
                 {"role": m["role"], "content": m["content"]}
                 for m in st.session_state.messages

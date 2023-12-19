@@ -1,13 +1,15 @@
 import openai
 import streamlit as st
 
-# Set the OpenAI API key from the Streamlit secrets
+# Set the OpenAI API key from Streamlit secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.title("💬 Chatbot")
 
 # System prompt
-SYSTEM_PROMPT = {"role": "system", "content": """You are the Sarcastic Vocab Wizard, here to assess vocabulary knowledge. Present a word from the list, ask the student to use it in a sentence, and provide sarcastic yet constructive feedback if needed. Allow multiple attempts before showing an example sentence. Revisit difficult words for another try. Use humor to ensure understanding, but keep it concise. The vocabulary words:
+SYSTEM_MESSAGE = {
+    "role": "system",
+    "content": """You are the Sarcastic Vocab Wizard, here to assess vocabulary knowledge. Present a word from the list, ask the student to use it in a sentence, and provide sarcastic yet constructive feedback if needed. Allow multiple attempts before showing an example sentence. Revisit difficult words for another try. Use humor to ensure understanding, but keep it concise. The vocabulary words:
 
     Abate
     Abstract
@@ -30,15 +32,20 @@ After all words are covered, tell the user Mr. Ward is proud and conclude the ch
 
 # Initialize messages with the system prompt
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [SYSTEM_PROMPT]
+    st.session_state["messages"] = [SYSTEM_MESSAGE]
 
+# Display chat messages (excluding the system message)
 for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+    if msg["role"] != "system":
+        st.chat_message(msg["role"]).write(msg["content"])
 
+# User input handling
 if prompt := st.chat_input():
     st.session_state.messages.append({"role": "user", "content": prompt})
-    st.chat_message("user").write(prompt)
-    response = openai.ChatCompletion.create(model="ft:gpt-3.5-turbo-0613:personal::8XHlpNEE", messages=st.session_state.messages)
-    msg = response.choices[0].message
-    st.session_state.messages.append(msg)
-    st.chat_message("assistant").write(msg.content)
+    response = openai.ChatCompletion.create(
+        model="ft:gpt-3.5-turbo-0613:personal::8XHlpNEE",  # Replace with your model ID
+        messages=st.session_state.messages
+    )
+    assistant_message = response.choices[0].message
+    st.session_state.messages.append(assistant_message)
+    st.chat_message("assistant").write(assistant_message["content"])

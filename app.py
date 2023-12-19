@@ -3,33 +3,30 @@ import streamlit as st
 import openai
 import uuid
 import time
-import pandas as pd
-import io
-from openai import OpenAI
 
 # Set up the page
 st.set_page_config(page_title="Sarcastic Vocab Wizard")
 st.sidebar.title("Sarcastic Vocab Wizard")
-st.sidebar.divider()  
+st.sidebar.divider()
 
+# Custom styles for the input box
 input_box_styles = """
 <style>
-/* Target the chat input box */
 .stTextInput > div > div > input {
-    font-size: 16px; /* Larger font size */
-    height: 50px; /* Taller input box */
-    border: 2px solid #007BFF; /* Blue border, 2px thick */
-    border-radius: 5px; /* Rounded corners for the border */
+    font-size: 16px;
+    height: 50px;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
 }
 </style>
 """
 st.markdown(input_box_styles, unsafe_allow_html=True)
 
-# Initialize OpenAI client
-client = OpenAI()
+# Initialize OpenAI client and set the API key
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-# Your chosen model
-MODEL = "gpt-3.5-turbo-16k"
+# Your chosen fine-tuned model
+MODEL = "ft:gpt-3.5-turbo-0613:personal::8XHlpNEE"  # Replace with your fine-tuned model ID
 
 # Initialize session state variables
 if "session_id" not in st.session_state:
@@ -44,75 +41,51 @@ if "messages" not in st.session_state:
 if "retry_error" not in st.session_state:
     st.session_state.retry_error = 0
 
-# Initialize OpenAI assistant
-if "assistant" not in st.session_state:
-    openai.api_key = st.secrets["OPENAI_API_KEY"]
-    st.session_state.assistant = openai.beta.assistants.retrieve(st.secrets["OPENAI_ASSISTANT"])
-    st.session_state.thread = client.beta.threads.create(
-        metadata={'session_id': st.session_state.session_id}
-    )
+# Define your system prompt here
+SYSTEM_PROMPT = """You are the Sarcastic Vocab Wizard, here to assess vocabulary knowledge. You embrace a trial and error method of learning. Present words from the list in order, ask the student to use it in a sentence, and provide sarcastic and mocking yet constructive feedback when needed. If a student asks you to be nicer, then do so. Feedback should be iterative. Allow multiple attempts before showing an example sentence. Revisit difficult words for another try. Use humor to ensure understanding, but keep it concise. The vocabulary words:
 
-# Display chat messages
-elif hasattr(st.session_state.run, 'status') and st.session_state.run.status == "completed":
-    st.session_state.messages = client.beta.threads.messages.list(
-        thread_id=st.session_state.thread.id
-    )
-    for message in reversed(st.session_state.messages.data):
-        if message.role in ["user", "assistant"]:
-            with st.chat_message(message.role):
-                for content_part in message.content:
-                    message_text = content_part.text.value
-                    st.markdown(message_text)
+    Abate
+    Abstract
+    Abysmal
+    Accordingly
+    Acquisition
+    Adapt
+    Adept
+    Adequate
+    Advent
+    Adversarial
+    Querulous
+    Quixotic
+    Quagmire
+    Quintessential
+    Quiescent
 
-# Chat input and message creation with file ID
+If a student says 'thanks for the fun', reply 'Mr. Ward is proud of you!' and end the chat. After all words are covered, tell the user Mr. Ward is proud and conclude the chat. Limit token use."""
+
+# Chat input and message creation
 if prompt := st.chat_input("How can I help you?"):
     with st.chat_message('user'):
         st.write(prompt)
 
-    message_data = {
-        "thread_id": st.session_state.thread.id,
-        "role": "user",
-        "content": prompt
-    }
+    # Combine the system prompt with the user's prompt
+    combined_prompt = SYSTEM_PROMPT + prompt
 
-    # Include file ID in the request if available
-    if "file_id" in st.session_state:
-        message_data["file_ids"] = [st.session_state.file_id]
+    # Call to OpenAI API with the fine-tuned model and the combined prompt
+    try:
+        response = openai.Completion.create(
+            model=MODEL,
+            prompt=combined_prompt,  # Combined system and user prompt
+            max_tokens=150  # Adjust as needed
+        )
+        assistant_reply = response.choices[0].text.strip() if response.choices else "No response."
 
-    st.session_state.messages = client.beta.threads.messages.create(**message_data)
+        with st.chat_message('assistant'):
+            st.write(assistant_reply)
 
-    st.session_state.run = client.beta.threads.runs.create(
-        thread_id=st.session_state.thread.id,
-        assistant_id=st.session_state.assistant.id,
-    )
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
+
+    # Retry logic as needed (can be customized)
     if st.session_state.retry_error < 3:
         time.sleep(1)
         st.rerun()
-
-# Handle run status
-if hasattr(st.session_state.run, 'status'):
-    if st.session_state.run.status == "running":
-        with st.chat_message('assistant'):
-            st.write("Thinking ......")
-        if st.session_state.retry_error < 3:
-            time.sleep(1)
-            st.rerun()
-
-    elif st.session_state.run.status == "failed":
-        st.session_state.retry_error += 1
-        with st.chat_message('assistant'):
-            if st.session_state.retry_error < 3:
-                st.write("Run failed, retrying ......")
-                time.sleep(3)
-                st.rerun()
-            else:
-                st.error("FAILED: The OpenAI API is currently processing too many requests. Please try again later ......")
-
-    elif st.session_state.run.status != "completed":
-        st.session_state.run = client.beta.threads.runs.retrieve(
-            thread_id=st.session_state.thread.id,
-            run_id=st.session_state.run.id,
-        )
-        if st.session_state.retry_error < 3:
-            time.sleep(3)
-            st.rerun()

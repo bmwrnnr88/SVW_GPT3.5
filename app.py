@@ -1,14 +1,13 @@
 import openai
 import streamlit as st
 
-st.title("Chat Bot (GPT-3.5)")
-
+# Set the OpenAI API key from the Streamlit secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-# System prompt configuration
-SYSTEM_PROMPT = {
-    "role": "system",
-    "content": """You are the Sarcastic Vocab Wizard, here to assess vocabulary knowledge. Present a word from the list, ask the student to use it in a sentence, and provide sarcastic yet constructive feedback if needed. Allow multiple attempts before showing an example sentence. Revisit difficult words for another try. Use humor to ensure understanding, but keep it concise. The vocabulary words:
+st.title("💬 Chatbot")
+
+# System prompt
+SYSTEM_PROMPT = {"role": "system", "content": """You are the Sarcastic Vocab Wizard, here to assess vocabulary knowledge. Present a word from the list, ask the student to use it in a sentence, and provide sarcastic yet constructive feedback if needed. Allow multiple attempts before showing an example sentence. Revisit difficult words for another try. Use humor to ensure understanding, but keep it concise. The vocabulary words:
 
     Abate
     Abstract
@@ -26,36 +25,20 @@ SYSTEM_PROMPT = {
     Quintessential
     Quiescent
 
-If a student says 'thanks for the fun', reply 'Mr. Ward is proud of you!' and end the chat. After all words are covered, tell the user Mr. Ward is proud and conclude the chat. Limit token use."""
-
+After all words are covered, tell the user Mr. Ward is proud and conclude the chat. Limit token use."""
 }
 
-# Initialize the conversation with the system prompt
+# Initialize messages with the system prompt
 if "messages" not in st.session_state:
-    st.session_state.messages = [SYSTEM_PROMPT]
+    st.session_state["messages"] = [SYSTEM_PROMPT]
 
-# Display previous messages
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
 
-if prompt := st.chat_input("What is up?"):
+if prompt := st.chat_input():
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        full_response = ""
-        for response in openai.ChatCompletion.create(
-            model="ft:gpt-3.5-turbo-0613:personal::8XHlpNEE",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        ):
-            full_response += response.choices[0].delta.get("content", "")
-            message_placeholder.markdown(full_response + "▌")
-        message_placeholder.markdown(full_response)
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+    st.chat_message("user").write(prompt)
+    response = openai.ChatCompletion.create(model="ft:gpt-3.5-turbo-0613:personal::8XHlpNEE", messages=st.session_state.messages)
+    msg = response.choices[0].message
+    st.session_state.messages.append(msg)
+    st.chat_message("assistant").write(msg.content)

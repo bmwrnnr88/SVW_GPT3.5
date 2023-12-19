@@ -1,8 +1,5 @@
 import openai
 import streamlit as st
-import toml
-
-secrets = toml.load("secrets.toml")
 
 st.title("Chat Bot (GPT-3.5)")
 

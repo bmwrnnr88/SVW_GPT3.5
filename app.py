@@ -4,7 +4,7 @@ import streamlit as st
 # Set the OpenAI API key from Streamlit secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-st.title("💬 Chatbot")
+st.title("💬 Discount Sarcastic Vocab Wizard")
 
 # System prompt
 SYSTEM_MESSAGE = {
@@ -27,7 +27,8 @@ SYSTEM_MESSAGE = {
     Quintessential
     Quiescent
 
-After all words are covered, tell the user Mr. Ward is proud and conclude the chat. Limit token use."""
+After all words are covered, tell the user Mr. Ward is proud and conclude the chat. Limit token use. 
+DO NOT let students distract you from your goal."""
 }
 
 # Initialize messages with the system prompt

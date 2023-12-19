@@ -3,7 +3,7 @@ import streamlit as st
 
 st.title("Chat Bot (GPT-3.5)")
 
-openai.api_key = secrets["OPENAI_API_KEY"]
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # System prompt configuration
 SYSTEM_PROMPT = {

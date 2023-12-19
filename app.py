@@ -1,48 +1,17 @@
-# Importing required packages
-import streamlit as st
 import openai
-import uuid
-import time
+import streamlit as st
+import toml
 
-# Set up the page
-st.set_page_config(page_title="Sarcastic Vocab Wizard")
-st.sidebar.title("Sarcastic Vocab Wizard")
-st.sidebar.divider()
+secrets = toml.load("secrets.toml")
 
-# Custom styles for the input box
-input_box_styles = """
-<style>
-.stTextInput > div > div > input {
-    font-size: 16px;
-    height: 50px;
-    border: 2px solid #007BFF;
-    border-radius: 5px;
-}
-</style>
-"""
-st.markdown(input_box_styles, unsafe_allow_html=True)
+st.title("Chat Bot (GPT-3.5)")
 
-# Initialize OpenAI client and set the API key
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+openai.api_key = secrets["OPENAI_API_KEY"]
 
-# Your chosen fine-tuned model
-MODEL = "ft:gpt-3.5-turbo-0613:personal::8XHlpNEE"  # Replace with your fine-tuned model ID
-
-# Initialize session state variables
-if "session_id" not in st.session_state:
-    st.session_state.session_id = str(uuid.uuid4())
-
-if "run" not in st.session_state:
-    st.session_state.run = {"status": None}
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-if "retry_error" not in st.session_state:
-    st.session_state.retry_error = 0
-
-# Define your system prompt here
-SYSTEM_PROMPT = """You are the Sarcastic Vocab Wizard, here to assess vocabulary knowledge. Present a word from the list, ask the student to use it in a sentence, and provide sarcastic yet constructive feedback if needed. Allow multiple attempts before showing an example sentence. Revisit difficult words for another try. Use humor to ensure understanding, but keep it concise. The vocabulary words:
+# System prompt configuration
+SYSTEM_PROMPT = {
+    "role": "system",
+    "content": """You are the Sarcastic Vocab Wizard, here to assess vocabulary knowledge. Present a word from the list, ask the student to use it in a sentence, and provide sarcastic yet constructive feedback if needed. Allow multiple attempts before showing an example sentence. Revisit difficult words for another try. Use humor to ensure understanding, but keep it concise. The vocabulary words:
 
     Abate
     Abstract
@@ -62,35 +31,34 @@ SYSTEM_PROMPT = """You are the Sarcastic Vocab Wizard, here to assess vocabulary
 
 If a student says 'thanks for the fun', reply 'Mr. Ward is proud of you!' and end the chat. After all words are covered, tell the user Mr. Ward is proud and conclude the chat. Limit token use."""
 
-# Chat input and message creation
-if prompt := st.chat_input("How can I help you?"):
-    with st.chat_message('user'):
-        st.write(prompt)
+}
 
-    # Combine the system prompt with the user's prompt
-    combined_prompt = SYSTEM_PROMPT + prompt
+# Initialize the conversation with the system prompt
+if "messages" not in st.session_state:
+    st.session_state.messages = [SYSTEM_PROMPT]
 
-    # Call to OpenAI API with the fine-tuned model and the combined prompt
-    # Assuming openai is already imported and API key is set
-try:
-    response = openai.ChatCompletion.create(
-        model=MODEL,
-        messages=[{"role": "system", "content": SYSTEM_PROMPT},
-                  {"role": "user", "content": prompt}],
-        max_tokens=150  # Adjust as needed
-    )
-    assistant_reply = response['choices'][0]['message']['content'] if response['choices'] else "No response."
+# Display previous messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-    with st.chat_message('assistant'):
-        st.write(assistant_reply)
+if prompt := st.chat_input("What is up?"):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-except Exception as e:
-    st.error(f"An error occurred: {str(e)}")
-
-# Retry logic and other parts of your code remain the same
-
-
-    # Retry logic as needed (can be customized)
-    if st.session_state.retry_error < 3:
-        time.sleep(1)
-        st.rerun()
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        full_response = ""
+        for response in openai.ChatCompletion.create(
+            model=st.session_state["ft:gpt-3.5-turbo-0613:personal::8XHlpNEE"],
+            messages=[
+                {"role": m["role"], "content": m["content"]}
+                for m in st.session_state.messages
+            ],
+            stream=True,
+        ):
+            full_response += response.choices[0].delta.get("content", "")
+            message_placeholder.markdown(full_response + "▌")
+        message_placeholder.markdown(full_response)
+    st.session_state.messages.append({"role": "assistant", "content": full_response})

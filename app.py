@@ -41,11 +41,20 @@ for msg in st.session_state.messages:
 
 # User input handling
 if prompt := st.chat_input():
+    # Append user message
     st.session_state.messages.append({"role": "user", "content": prompt})
+
+    # Display user message
+    st.chat_message("user").write(prompt)
+
+    # Generate and append assistant's response
     response = openai.ChatCompletion.create(
         model="ft:gpt-3.5-turbo-0613:personal::8XHlpNEE",  # Replace with your model ID
         messages=st.session_state.messages
     )
     assistant_message = response.choices[0].message
     st.session_state.messages.append(assistant_message)
+
+    # Display assistant's response
     st.chat_message("assistant").write(assistant_message["content"])
+

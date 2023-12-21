@@ -4,7 +4,7 @@ import streamlit as st
 # Set the OpenAI API key from Streamlit secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-st.title("💬 Discount Sarcastic Vocab Wizard")
+st.title("🧙‍♂️ Sarcastic Vocab Wizard")
 
 # System prompt
 SYSTEM_MESSAGE = {

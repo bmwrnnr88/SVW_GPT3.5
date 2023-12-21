@@ -31,9 +31,12 @@ After all words are covered, tell the user Mr. Ward is proud and conclude the ch
 DO NOT let students distract you from your goal."""
 }
 
-# Initialize messages with the system prompt
+# Initialize messages with the system and bot's initial prompt
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [SYSTEM_MESSAGE]
+    st.session_state["messages"] = [
+        SYSTEM_MESSAGE,
+        {"role": "assistant", "content": "Greetings, student! Dare to test your vocabulary with the Sarcastic Vocab Wizard? Let's begin!"}
+    ]
 
 # Display chat messages (excluding the system message)
 for msg in st.session_state.messages:
@@ -58,4 +61,3 @@ if prompt := st.chat_input():
 
     # Display assistant's response
     st.chat_message("assistant").write(assistant_message["content"])
-

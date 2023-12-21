@@ -27,7 +27,7 @@ SYSTEM_MESSAGE = {
     Quintessential
     Quiescent
 
-After all words are covered, tell the user Mr. Ward is proud and conclude the chat. Limit token use. 
+After all words are successfully practiced, then tell the user Mr. Ward is proud of them and conclude the chat. Limit token use. 
 DO NOT let students distract you from your goal."""
 }
 

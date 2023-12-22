@@ -33,7 +33,7 @@ DO NOT let students distract you from your goal."""
 # Bot initial greeting message (displayed to the user)
 BOT_GREETING = {
     "role": "assistant",
-    "content": "Greetings, student! Dare to test your vocabulary with the Sarcastic Vocab Wizard? Let's begin!"
+    "content": "Greetings, student! Dare to test your vocabulary with the Sarcastic Vocab Wizard? Let's begin! First, what is your name, and what period do you have Mr. Ward's award winning English class?"
 }
 
 # Initialize messages with only the bot greeting

@@ -30,6 +30,11 @@ SYSTEM_MESSAGE = {
 After all words are covered, tell the user Mr. Ward is proud and conclude the chat. Limit token use. 
 DO NOT let students distract you from your goal."""
 }
+# Bot initial greeting message (displayed to the user)
+BOT_GREETING = {
+    "role": "assistant",
+    "content": "Greetings, student! Dare to test your vocabulary with the Sarcastic Vocab Wizard? Let's begin!"
+}
 
 # Initialize messages with only the bot greeting
 if "messages" not in st.session_state:

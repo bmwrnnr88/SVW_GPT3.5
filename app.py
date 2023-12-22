@@ -31,29 +31,25 @@ After all words are covered, tell the user Mr. Ward is proud and conclude the ch
 DO NOT let students distract you from your goal."""
 }
 
+# Bot initial greeting message
+BOT_GREETING = {
+    "role": "assistant",
+    "content": "Greetings, student! Dare to test your vocabulary with the Sarcastic Vocab Wizard? Let's begin!"
+}
+
 # Initialize messages with the system prompt
 if "messages" not in st.session_state:
     st.session_state["messages"] = [SYSTEM_MESSAGE]
 
-# Display chat messages (excluding the system message)
-for msg in st.session_state.messages:
-    if msg["role"] != "system":
-        st.chat_message(msg["role"]).write(msg["content"])
+    # Add the custom bot greeting as the first message on first load
+    st.session_state["messages"].append(BOT_GREETING)
 
-# Check if it's the first user interaction
-first_interaction = len(st.session_state.messages) == 1
+# Display chat messages
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
 
 # User input handling
 if prompt := st.chat_input():
-
-    # If it's the first interaction, add a bot greeting
-    if first_interaction:
-        bot_greeting = {
-            "role": "assistant",
-            "content": "Greetings! I'm the Sarcastic Vocab Wizard. Not that I care, but what is your name, and what period do you have Mr. Ward's AMAZING English class?"
-        }
-        st.chat_message("assistant").write(bot_greeting["content"])
-        st.session_state.messages.append(bot_greeting)
 
     # Append user message
     st.session_state.messages.append({"role": "user", "content": prompt})

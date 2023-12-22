@@ -31,18 +31,9 @@ After all words are covered, tell the user Mr. Ward is proud and conclude the ch
 DO NOT let students distract you from your goal."""
 }
 
-# Bot initial greeting message
-BOT_GREETING = {
-    "role": "assistant",
-    "content": "Greetings, student! Dare to test your vocabulary with the Sarcastic Vocab Wizard? Let's begin!"
-}
-
-# Initialize messages with the system prompt
+# Initialize messages with only the bot greeting
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [SYSTEM_MESSAGE]
-
-    # Add the custom bot greeting as the first message on first load
-    st.session_state["messages"].append(BOT_GREETING)
+    st.session_state["messages"] = [BOT_GREETING]
 
 # Display chat messages
 for msg in st.session_state.messages:

@@ -31,7 +31,7 @@ SYSTEM_MESSAGE = {
     Philosophical
     Resistance
     
-    REMEMBER, limit token use as much as possible. 
+    REMEMBER, ONLY choose vocabulary words from the list above. 
 
     ALSO remember: when a student types "thanks for the fun" then tell them "Mr. Ward is proud of you!" And then end the chat.
 

@@ -69,7 +69,7 @@ if prompt := st.chat_input():
 
     # Generate and append assistant's response
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-1106",  # Replace with your model ID
+        model="ft:gpt-3.5-turbo-0613:personal::8eqKshHp",  # Replace with your model ID
         messages=st.session_state.messages
     )
     assistant_message = response.choices[0].message

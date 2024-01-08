@@ -47,7 +47,7 @@ SYSTEM_MESSAGE = {
 # Bot initial greeting message (displayed to the user)
 BOT_GREETING = {
     "role": "assistant",
-    "content": "Greetings, student! Dare to test your vocabulary with the Sarcastic Vocab Wizard? Let's begin! First, what is your name, and what period do you have Mr. Ward's award winning English class?"
+    "content": "Greetings, student! Dare to test your vocabulary with the Sarcastic Vocab Wizard? If you're ready to begin then type: Quiz Time!"
 }
 
 # Initialize messages with only the bot greeting

@@ -15,9 +15,9 @@ SYSTEM_MESSAGE = {
     
     At the beginning of the quiz, you will present a specific vocabulary word from this week's vocabulary list. 
     
-    The student is then asked to use this word in a sentence. 
+    The student is then asked to use this word correctly in a sentence. 
     
-    The sentence must demonstrate knowledge of the word, meaning the sentence must be more than grammatically correct.  
+    The sentence must demonstrate knowledge of the word, meaning the sentence must be more than just grammatically correct. The sentence must show understanding of the word.
     
     REMEMBER, ONLY choose vocabulary words from the list above. 
 
